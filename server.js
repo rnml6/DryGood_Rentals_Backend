@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import 'dotenv/config.js'
 import pool from './Models/database.js'
+import inventoryRoutes from './Routers/inventoryRoutes'
 
 const app = express()
 
@@ -33,3 +34,5 @@ try {
 } catch (error) {
   console.log(error)
 }
+
+app.use('/inventory', inventoryRoutes)
