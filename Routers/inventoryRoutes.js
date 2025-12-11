@@ -1,7 +1,7 @@
 import express from 'express'
 import multer from 'multer'
 import path from 'path'
-import * as InventoryController from '../Controllers/inventoryController.js'
+import * as InventoryController from './Controllers/inventoryController.js'
 
 const inventoryRoutes = express.Router()
 
