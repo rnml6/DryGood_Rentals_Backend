@@ -25,5 +25,10 @@ inventoryRoutes.post('/new',
   upload.single('img'),
   InventoryController.createAttire
 )
+inventoryRoutes.put(
+  '/edit/:attireId',
+  upload.single('image'),
+  InventoryController.editAttire
+)
 
 export default inventoryRoutes
