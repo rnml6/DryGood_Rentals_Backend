@@ -74,3 +74,27 @@ export const fetchRecords = async (req, res) => {
     })
   }
 }
+
+export const editStatuses = async (req, res) => {
+  const { attire_id } = req.body
+  const { id } = req.params
+
+  try {
+    const updatedRecord = await RentalModel.updateRecordStatus(id, 'Returned')
+
+    const updatedInventory = await InventoryModel.updateInventoryStatus(
+      attire_id,
+      'Available'
+    )
+
+    res.status(200).json({
+      success: true,
+      message: 'Statuses updated',
+      updatedRecord,
+      updatedInventory
+    })
+  } catch (e) {
+    console.log(e)
+    res.status(500).json({ success: false, message: 'Internal Server Error' })
+  }
+}
