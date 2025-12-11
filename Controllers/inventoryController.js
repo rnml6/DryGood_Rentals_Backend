@@ -56,3 +56,15 @@ export const fetchAttires = async (req, res) => {
     })
   }
 }
+
+
+export const removeAttire = async (req, res) => {
+  const { attireId } = req.params
+  try {
+    const deleteId = await InventoryModel.deleteAttire(attireId)
+    res.status(200).json({ success: true, message: deleteId })
+  } catch (e) {
+    console.log(e)
+    res.status(500).json({ success: false, message: 'Internal Server Error' })
+  }
+}
