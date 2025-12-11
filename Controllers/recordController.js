@@ -98,3 +98,15 @@ export const editStatuses = async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal Server Error' })
   }
 }
+
+
+export const removeRecord = async (req, res) => {
+  const { id } = req.params
+  try {
+    const deleteId = await RentalModel.deleteRecord(id)
+    res.status(200).json({ success: true, message: deleteId })
+  } catch (e) {
+    console.log(e)
+    res.status(500).json({ success: false, message: 'Internal Server Error' })
+  }
+}
