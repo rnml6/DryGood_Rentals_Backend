@@ -48,3 +48,42 @@ export const addAttire = async attireData => {
   )
   return result.affectedRows
 }
+
+export const updateAttire = async (
+  name,
+  category,
+  gender,
+  size,
+  color,
+  price,
+  material,
+  status,
+  date_added,
+  description,
+  image,
+  id
+) => {
+  const [result] = await pool.query(
+    `UPDATE rental_inventory 
+     SET name=?, category=?, gender=?, size=?, color=?, price=?, 
+         material=?, status=?, date_added=?, description=?,
+         image = COALESCE(?, image)
+     WHERE id=?`,
+    [
+      name,
+      category,
+      gender,
+      size,
+      color,
+      price,
+      material,
+      status,
+      date_added,
+      description,
+      image,
+      id
+    ]
+  )
+
+  return result.affectedRows
+}
