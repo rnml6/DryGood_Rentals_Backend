@@ -1,4 +1,4 @@
-import * as LoginModel from '../models/loginModel.js'
+import * as LoginModel from '../Models/loginModel.js'
 import bcrypt from 'bcryptjs'
 
 export const loginUser = async (req, res) => {
