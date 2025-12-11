@@ -12,3 +12,47 @@ export const fetchAttires = async (req, res) => {
       })
     }
   }
+
+  export const createAttire = async (req, res) => {
+  try {
+    const {
+      name,
+      category,
+      gender,
+      size,
+      color,
+      rentalPrice,
+      material,
+      status,
+      dateAdded,
+      description
+    } = req.body
+    const img = req.file ? req.file.filename : null
+
+    const newAttire = await InventoryModel.addAttire({
+      name,
+      category,
+      gender,
+      size,
+      color,
+      rentalPrice,
+      material,
+      status,
+      img,
+      dateAdded,
+      description
+    })
+
+    res.status(201).json({
+      success: true,
+      message: 'Attire added successfully',
+      id: newAttire.insertId
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      success: false,
+      message: error
+    })
+  }
+}
