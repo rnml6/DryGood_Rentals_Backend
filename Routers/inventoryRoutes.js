@@ -21,8 +21,7 @@ const upload = multer({ storage })
 
 inventoryRoutes.get('/all', InventoryController.fetchAttires)
 inventoryRoutes.delete('/delete/:attireId', InventoryController.removeAttire)
-inventoryRoutes.post(
-  '/new',
+inventoryRoutes.post('/new',
   upload.single('img'),
   InventoryController.createAttire
 )
