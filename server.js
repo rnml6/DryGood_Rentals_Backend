@@ -3,6 +3,7 @@ import cors from 'cors'
 import 'dotenv/config.js'
 import pool from './Models/database.js'
 import loginRoutes from './Routers/loginRouter.js'
+import RecordRoutes from './Routers/recordRoutes.js'
 
 
 const app = express()
@@ -37,3 +38,4 @@ try {
 }
 
 app.use('/user', loginRoutes)
+app.use('/record', RecordRoutes)
