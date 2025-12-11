@@ -20,3 +20,15 @@ export const loginUser = async (req, res) => {
 
   return res.json({ success: true, message: 'Login success', user })
 }
+
+export const register = async (req, res) => {
+  const { email, password } = req.body
+
+  try {
+    const user = await LoginModel.createUser(email, password)
+    res.status(200).json({ success: true, message: user })
+  } catch (e) {
+    console.log(e)
+    res.status(400).json({ success: false, message: e })
+  }
+}
