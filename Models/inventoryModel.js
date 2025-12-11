@@ -40,3 +40,11 @@ export const addAttire = async attireData => {
     )
     return result
   }
+
+  export const deleteAttire = async attireId => {
+  const [result] = await pool.query(
+    'DELETE FROM rental_inventory WHERE id= ?',
+    [attireId]
+  )
+  return result.affectedRows
+}
