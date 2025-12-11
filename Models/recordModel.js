@@ -40,3 +40,8 @@ export const addRentalRecord = async rentalData => {
 
   return result
 }
+
+export const getRentalRecords = async () => {
+  const [rows] = await pool.query('SELECT * FROM rental_record')
+  return rows
+}
