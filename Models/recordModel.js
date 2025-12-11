@@ -45,3 +45,11 @@ export const getRentalRecords = async () => {
   const [rows] = await pool.query('SELECT * FROM rental_record')
   return rows
 }
+
+export const updateRecordStatus = async (id, status) => {
+    const [result] = await pool.query(
+      `UPDATE rental_record SET rental_status = ? WHERE id = ?`,
+      [status, id]
+    )
+    return result
+  }
