@@ -68,3 +68,45 @@ export const removeAttire = async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal Server Error' })
   }
 }
+
+
+export const editAttire = async (req, res) => {
+  const {
+    name,
+    category,
+    gender,
+    size,
+    color,
+    price,
+    material,
+    status,
+    date_added,
+    description
+  } = req.body
+
+  const { attireId } = req.params
+
+  const image = req.file ? req.file.filename : null
+
+  try {
+    const updatedId = await InventoryModel.updateAttire(
+      name,
+      category,
+      gender,
+      size,
+      color,
+      price,
+      material,
+      status,
+      date_added,
+      description,
+      image,
+      attireId
+    )
+
+    res.status(200).json({ success: true, message: updatedId })
+  } catch (e) {
+    console.log(e)
+    res.status(500).json({ success: false, message: 'Internal Server Error' })
+  }
+}
