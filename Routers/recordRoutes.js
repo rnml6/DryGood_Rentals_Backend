@@ -19,6 +19,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage })
 
+rentalRoutes.get('/all', RentalController.fetchRecords)
+
 rentalRoutes.post('/new', upload.single('id_image'), async (req, res) => {
   try {
     const newRecord = await RentalController.createRentalRecord(req)
