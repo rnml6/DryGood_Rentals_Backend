@@ -2,6 +2,8 @@ import express from 'express'
 import cors from 'cors'
 import 'dotenv/config.js'
 import pool from './Models/database.js'
+import loginRoutes from './Routers/loginRouter.js'
+
 
 const app = express()
 
@@ -33,3 +35,5 @@ try {
 } catch (error) {
   console.log(error)
 }
+
+app.use('/user', loginRoutes)
