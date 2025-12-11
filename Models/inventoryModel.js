@@ -87,3 +87,11 @@ export const updateAttire = async (
 
   return result.affectedRows
 }
+
+export const updateInventoryStatus = async (attire_id, status) => {
+  const [result] = await pool.query(
+    'UPDATE rental_inventory SET status = ? WHERE id = ?',
+    [status, attire_id]
+  );
+  return result;
+};
