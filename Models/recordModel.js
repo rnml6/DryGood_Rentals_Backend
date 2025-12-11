@@ -53,3 +53,10 @@ export const updateRecordStatus = async (id, status) => {
     )
     return result
   }
+
+export const deleteRecord = async id => {
+  const [result] = await pool.query('DELETE FROM rental_record WHERE id= ?', [
+    id
+  ])
+  return result.affectedRows
+}
