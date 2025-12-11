@@ -6,10 +6,10 @@ import * as RentalController from '../Controllers/recordController.js'
 const rentalRoutes = express.Router()
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: function (req, file, cb) {
     cb(null, 'recordsId')      
   },
-  filename: (req, file, cb) => {
+  filename: function (req, file, cb) {
     cb(
       null,
       file.fieldname + '_' + Date.now() + path.extname(file.originalname)
@@ -37,4 +37,4 @@ rentalRoutes.post('/new', upload.single('id_image'), async (req, res) => {
   }
 })
 
-export default rentalRoutes
+export default rentalRoutes  
