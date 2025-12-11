@@ -1,5 +1,5 @@
-import * as RentalModel from '../models/recordModel.js'
-import * as InventoryModel from '../models/inventoryModel.js'
+import * as RentalModel from '../Models/recordModel.js'
+import * as InventoryModel from '../Models/inventoryModel.js'
 
 export const createRentalRecord = async (req, res) => {
   try {
