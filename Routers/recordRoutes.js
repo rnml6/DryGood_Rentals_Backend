@@ -21,6 +21,7 @@ const upload = multer({ storage })
 
 rentalRoutes.get('/all', RentalController.fetchRecords)
 rentalRoutes.put('/edit/:id', RentalController.editStatuses)
+rentalRoutes.delete('/delete/:id', RentalController.removeRecord)
 
 
 rentalRoutes.post('/new', upload.single('id_image'), async (req, res) => {
