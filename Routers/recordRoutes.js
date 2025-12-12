@@ -7,7 +7,7 @@ const rentalRoutes = express.Router()
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'recordsId')      
+    cb(null, 'recordsId')
   },
   filename: function (req, file, cb) {
     cb(
@@ -22,7 +22,6 @@ const upload = multer({ storage })
 rentalRoutes.get('/all', RentalController.fetchRecords)
 rentalRoutes.delete('/delete/:id', RentalController.removeRecord)
 rentalRoutes.put('/edit/:id', RentalController.editStatuses)
-
 
 rentalRoutes.post('/new', upload.single('id_image'), async (req, res) => {
   try {
@@ -42,4 +41,4 @@ rentalRoutes.post('/new', upload.single('id_image'), async (req, res) => {
   }
 })
 
-export default rentalRoutes  
+export default rentalRoutes
