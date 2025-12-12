@@ -99,7 +99,6 @@ export const editStatuses = async (req, res) => {
   }
 }
 
-
 export const removeRecord = async (req, res) => {
   const { id } = req.params
   try {
