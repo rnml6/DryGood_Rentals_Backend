@@ -1,33 +1,20 @@
 import express from 'express'
 import cors from 'cors'
 import 'dotenv/config.js'
-import pool from './Models/database.js'
-import loginRoutes from './Routers/loginRouter.js'
-import RecordRoutes from './Routers/recordRoutes.js'
-
+import loginRoutes from './routers/loginRouter.js'
+import inventoryRoutes from './routers/inventoryRoutes.js'
+import RecordRoutes from './routers/recordRoutes.js'
+import path from 'path'
+import { checkAndSendEmails } from './autoEmail.js'
 
 const app = express()
+checkAndSendEmails()
 
 app.use(cors())
 app.use(express.json())
-
-app.get('/', async (req, res) => {
-  try {
-    const connection = await pool.getConnection()
-    connection.release()
-
-    res.json({
-      success: true,
-      message: 'Server is running and MySQL is connected!'
-    })
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: 'Server is running but MySQL connection failed.',
-      error: err.message
-    })
-  }
-})
+app.use(express.urlencoded({ extended: true }))
+app.use('/uploads', express.static(path.join(path.resolve(), 'uploads')))
+app.use('/recordsId', express.static(path.join(path.resolve(), 'recordsId')))
 
 try {
   app.listen(process.env.PORT || 3000, () => {
@@ -38,4 +25,5 @@ try {
 }
 
 app.use('/user', loginRoutes)
+app.use('/inventory', inventoryRoutes)
 app.use('/record', RecordRoutes)
