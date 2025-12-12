@@ -1,9 +1,9 @@
 import express from 'express'
 import cors from 'cors'
 import 'dotenv/config.js'
-import loginRoutes from './routers/loginRouter.js'
-import inventoryRoutes from './routers/inventoryRoutes.js'
-import RecordRoutes from './routers/recordRoutes.js'
+import loginRoutes from './Routers/loginRouter.js'
+import inventoryRoutes from './Routers/inventoryRoutes.js'
+import RecordRoutes from './Routers/recordRoutes.js'
 import path from 'path'
 import { checkAndSendEmails } from './autoEmail.js'
 

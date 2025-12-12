@@ -1,5 +1,5 @@
-import * as RentalModel from '../Models/recordModel.js'
-import * as InventoryModel from '../Models/inventoryModel.js'
+import * as RentalModel from '../models/recordModel.js'
+import * as InventoryModel from '../models/inventoryModel.js'
 
 export const createRentalRecord = async (req, res) => {
   try {
@@ -104,6 +104,21 @@ export const removeRecord = async (req, res) => {
   try {
     const deleteId = await RentalModel.deleteRecord(id)
     res.status(200).json({ success: true, message: deleteId })
+  } catch (e) {
+    console.log(e)
+    res.status(500).json({ success: false, message: 'Internal Server Error' })
+  }
+}
+
+
+
+export const updateRecordTotal = async (req, res) => {
+  const { id } = req.params
+  const { total_amount } = req.body 
+
+  try {
+    const result = await RentalModel.updateRecordTotal(id, total_amount)
+    res.status(200).json({ success: true, data: result })
   } catch (e) {
     console.log(e)
     res.status(500).json({ success: false, message: 'Internal Server Error' })

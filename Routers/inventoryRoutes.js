@@ -1,7 +1,7 @@
 import express from 'express'
 import multer from 'multer'
 import path from 'path'
-import * as InventoryController from '../Controllers/inventoryController.js'
+import * as InventoryController from '../controllers/inventoryController.js'
 
 const inventoryRoutes = express.Router()
 
@@ -21,14 +21,15 @@ const upload = multer({ storage })
 
 inventoryRoutes.get('/all', InventoryController.fetchAttires)
 inventoryRoutes.delete('/delete/:attireId', InventoryController.removeAttire)
-inventoryRoutes.post('/new',
-  upload.single('img'),
-  InventoryController.createAttire
-)
 inventoryRoutes.put(
   '/edit/:attireId',
   upload.single('image'),
   InventoryController.editAttire
+)
+inventoryRoutes.post(
+  '/new',
+  upload.single('img'),
+  InventoryController.createAttire
 )
 
 export default inventoryRoutes
