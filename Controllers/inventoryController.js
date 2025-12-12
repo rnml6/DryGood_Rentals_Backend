@@ -1,19 +1,19 @@
-import * as InventoryModel from '../Models/inventoryModel.js'
+import * as InventoryModel from '../models/inventoryModel.js'
 
 export const fetchAttires = async (req, res) => {
-    try {
-      const attires = await InventoryModel.getAttires()
-      res.status(200).json({ success: true, message: attires })
-    } catch (error) {
-      console.log(error)
-      res.status(500).json({
-        success: false,
-        message: 'Internal Server Error'
-      })
-    }
+  try {
+    const attires = await InventoryModel.getAttires()
+    res.status(200).json({ success: true, message: attires })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      success: false,
+      message: 'Internal Server Error'
+    })
   }
+}
 
-  export const createAttire = async (req, res) => {
+export const createAttire = async (req, res) => {
   try {
     const {
       name,
@@ -57,7 +57,6 @@ export const fetchAttires = async (req, res) => {
   }
 }
 
-
 export const removeAttire = async (req, res) => {
   const { attireId } = req.params
   try {
@@ -68,7 +67,6 @@ export const removeAttire = async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal Server Error' })
   }
 }
-
 
 export const editAttire = async (req, res) => {
   const {

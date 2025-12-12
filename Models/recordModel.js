@@ -47,16 +47,24 @@ export const getRentalRecords = async () => {
 }
 
 export const updateRecordStatus = async (id, status) => {
-    const [result] = await pool.query(
-      `UPDATE rental_record SET rental_status = ? WHERE id = ?`,
-      [status, id]
-    )
-    return result
-  }
+  const [result] = await pool.query(
+    `UPDATE rental_record SET rental_status = ? WHERE id = ?`,
+    [status, id]
+  )
+  return result
+}
 
 export const deleteRecord = async id => {
   const [result] = await pool.query('DELETE FROM rental_record WHERE id= ?', [
     id
   ])
   return result.affectedRows
+}
+
+export const updateRecordTotal = async (id, totalAmount) => {
+  const [result] = await pool.query(
+    `UPDATE rental_record SET total_amount = ? WHERE id = ?`,
+    [totalAmount, id]
+  )
+  return result
 }
