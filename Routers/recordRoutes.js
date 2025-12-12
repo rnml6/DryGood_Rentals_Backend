@@ -1,7 +1,8 @@
 import express from 'express'
 import multer from 'multer'
 import path from 'path'
-import * as RentalController from '../Controllers/recordController.js'
+import * as RentalController from '../controllers/recordController.js'
+import { sendEmailForRecord } from '../autoEmail.js'
 
 const rentalRoutes = express.Router()
 
@@ -20,24 +21,24 @@ const storage = multer.diskStorage({
 const upload = multer({ storage })
 
 rentalRoutes.get('/all', RentalController.fetchRecords)
-rentalRoutes.delete('/delete/:id', RentalController.removeRecord)
 rentalRoutes.put('/edit/:id', RentalController.editStatuses)
+rentalRoutes.put('/edit/total/:id', RentalController.updateRecordTotal)
+rentalRoutes.delete('/delete/:id', RentalController.removeRecord)
 
 rentalRoutes.post('/new', upload.single('id_image'), async (req, res) => {
   try {
-    const newRecord = await RentalController.createRentalRecord(req)
+    const createdRecord = await RentalController.createRentalRecord(req)
 
-    return res.status(201).json({
+    await sendEmailForRecord(createdRecord)
+
+    res.status(201).json({
       success: true,
-      message: 'Rental record created successfully',
-      data: newRecord
+      message: 'Rental record added successfully',
+      data: createdRecord
     })
-  } catch (error) {
-    console.error(error)
-    return res.status(500).json({
-      success: false,
-      message: error.message
-    })
+  } catch (err) {
+    console.error('Error:', err)
+    res.status(500).json({ success: false, message: err.message })
   }
 })
 
