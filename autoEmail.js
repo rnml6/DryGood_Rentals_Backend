@@ -25,11 +25,26 @@ async function sendEmail (to, subject, html) {
   }
 }
 
+async function sendEmailToMultiple (recipients, subject, html) {
+  try {
+    const recipientsArray = Array.isArray(recipients)
+      ? recipients
+      : [recipients]
+
+    for (const recipient of recipientsArray) {
+      await sendEmail(recipient, subject, html)
+    }
+  } catch (err) {
+    console.error('Error sending email to multiple recipients:', err)
+  }
+}
+
 export async function sendEmailForRecord (record) {
   try {
     if (!record || !record.customer_email || !record.expected_return_date)
       return
 
+    const ownerEmail = 'andayaronmel@gmail.com'
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
@@ -39,11 +54,12 @@ export async function sendEmailForRecord (record) {
     const diffDays = Math.floor((returnDate - today) / (1000 * 60 * 60 * 24))
 
     let subject = null
-    let html = null
+    let customerHtml = null
+    let ownerHtml = null
 
     if (diffDays === 1) {
       subject = 'Rental Due Reminder'
-      html = `<p>Hi ${record.customer_name},</p>
+      customerHtml = `<p>Hi ${record.customer_name},</p>
           <p>This is a friendly reminder that your rental <strong>${
             record.attire_name
           }</strong> (ID: ${
@@ -51,11 +67,21 @@ export async function sendEmailForRecord (record) {
       }) is due tomorrow (${returnDate.toLocaleDateString()}).</p>
           <p>Please make sure to return it on time to avoid overdue fees.</p>
           <p>Thank you!</p>`
+
+      ownerHtml = `<p>Rental Due Tomorrow</p>
+          <p>Customer: ${record.customer_name}</p>
+          <p>Contact Number: ${record.customer_phone}</p>
+          <p>Email: ${record.customer_email}</p>
+          <p>Rental: <strong>${record.attire_name}</strong> (ID: ${
+        record.attire_id
+      })</p>
+          <p>Due Date: ${returnDate.toLocaleDateString()}</p>
+          <p>Status: Due tomorrow</p>`
     }
 
     if (diffDays === 0) {
       subject = 'Rental Due Today'
-      html = `<p>Hi ${record.customer_name},</p>
+      customerHtml = `<p>Hi ${record.customer_name},</p>
           <p>This is a reminder that your rental <strong>${
             record.attire_name
           }</strong> (ID: ${
@@ -63,6 +89,16 @@ export async function sendEmailForRecord (record) {
       }) is due today (${returnDate.toLocaleDateString()}).</p>
           <p>Please return it to avoid overdue fees.</p>
           <p>Thank you!</p>`
+
+      ownerHtml = `<p>Rental Due Today</p>
+          <p>Customer: ${record.customer_name}</p>
+          <p>Contact Number: ${record.customer_phone}</p>
+          <p>Email: ${record.customer_email}</p>
+          <p>Rental: <strong>${record.attire_name}</strong> (ID: ${
+        record.attire_id
+      })</p>
+          <p>Due Date: ${returnDate.toLocaleDateString()}</p>
+          <p>Status: Due today</p>`
     }
 
     if (diffDays < 0) {
@@ -70,17 +106,32 @@ export async function sendEmailForRecord (record) {
       const overdueFee = overdueDays * 250
 
       subject = 'Rental Overdue Notice'
-      html = `<p>Hi ${record.customer_name},</p>
+      customerHtml = `<p>Hi ${record.customer_name},</p>
           <p>Your rental <strong>${record.attire_name}</strong> (ID: ${
         record.attire_id
       }) is overdue by ${overdueDays} day(s).</p>
           <p>Current overdue fee: ₱${overdueFee.toLocaleString()}.</p>
           <p>Please return your rental as soon as possible.</p>`
+
+      ownerHtml = `<p>Rental Overdue</p>
+          <p>Customer: ${record.customer_name}</p>
+          <p>Contact Number: ${record.customer_phone}</p>
+          <p>Email: ${record.customer_email}</p>
+          <p>Rental: <strong>${record.attire_name}</strong> (ID: ${
+        record.attire_id
+      })</p>
+          <p>Due Date: ${returnDate.toLocaleDateString()}</p>
+          <p>Overdue by: ${overdueDays} day(s)</p>
+          <p>Overdue fee: ₱${overdueFee.toLocaleString()}</p>
+          <p>Status: Overdue</p>`
     }
 
     if (!subject) return
 
-    await sendEmail(record.customer_email, subject, html)
+    await sendEmail(record.customer_email, subject, customerHtml)
+
+    const ownerSubject = `[Owner] ${subject} - ${record.customer_name}`
+    await sendEmail(ownerEmail, ownerSubject, ownerHtml)
   } catch (err) {
     console.error('Error sending email for record:', err)
   }
@@ -92,6 +143,7 @@ export async function checkAndSendEmails () {
     const data = await res.json()
     const records = data.message || []
 
+    const ownerEmail = 'andayaronmel@gmail.com'
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
@@ -106,7 +158,7 @@ export async function checkAndSendEmails () {
 
       if (diffDays === 1) {
         const subject = 'Rental Due Reminder'
-        const html = `<p>Hi ${record.customer_name},</p>
+        const customerHtml = `<p>Hi ${record.customer_name},</p>
           <p>This is a friendly reminder that your rental <strong>${
             record.attire_name
           }</strong> (ID: ${
@@ -114,12 +166,28 @@ export async function checkAndSendEmails () {
         }) is due tomorrow (${returnDate.toLocaleDateString()}).</p>
           <p>Please make sure to return it on time to avoid overdue fees.</p>
           <p>Thank you!</p>`
-        await sendEmail(record.customer_email, subject, html)
+
+        const ownerHtml = `<p>Rental Due Tomorrow</p>
+          <p>Customer: ${record.customer_name}</p>
+          <p>Contact Number: ${record.customer_phone}</p>
+          <p>Email: ${record.customer_email}</p>
+          <p>Rental: <strong>${record.attire_name}</strong> (ID: ${
+          record.attire_id
+        })</p>
+          <p>Due Date: ${returnDate.toLocaleDateString()}</p>
+          <p>Status: Due tomorrow</p>`
+
+        await sendEmail(record.customer_email, subject, customerHtml)
+        await sendEmail(
+          ownerEmail,
+          `[Owner] ${subject} - ${record.customer_name}`,
+          ownerHtml
+        )
       }
 
       if (diffDays === 0) {
         const subject = 'Rental Due Today'
-        const html = `<p>Hi ${record.customer_name},</p>
+        const customerHtml = `<p>Hi ${record.customer_name},</p>
           <p>This is a reminder that your rental <strong>${
             record.attire_name
           }</strong> (ID: ${
@@ -127,20 +195,54 @@ export async function checkAndSendEmails () {
         }) is due today (${returnDate.toLocaleDateString()}).</p>
           <p>Please return it to avoid overdue fees.</p>
           <p>Thank you!</p>`
-        await sendEmail(record.customer_email, subject, html)
+
+        const ownerHtml = `<p>Rental Due Today</p>
+          <p>Customer: ${record.customer_name}</p>
+          <p>Contact Number: ${record.customer_phone}</p>
+          <p>Email: ${record.customer_email}</p>
+          <p>Rental: <strong>${record.attire_name}</strong> (ID: ${
+          record.attire_id
+        })</p>
+          <p>Due Date: ${returnDate.toLocaleDateString()}</p>
+          <p>Status: Due today</p>`
+
+        await sendEmail(record.customer_email, subject, customerHtml)
+        await sendEmail(
+          ownerEmail,
+          `[Owner] ${subject} - ${record.customer_name}`,
+          ownerHtml
+        )
       }
 
       if (diffDays < 0) {
         const overdueDays = Math.abs(diffDays)
         const overdueFee = overdueDays * 250
         const subject = 'Rental Overdue Notice'
-        const html = `<p>Hi ${record.customer_name},</p>
+        const customerHtml = `<p>Hi ${record.customer_name},</p>
           <p>Your rental <strong>${record.attire_name}</strong> (ID: ${
           record.attire_id
         }) is overdue by ${overdueDays} day(s).</p>
           <p>Current overdue fee: ₱${overdueFee.toLocaleString()}.</p>
           <p>Please return your rental as soon as possible.</p>`
-        await sendEmail(record.customer_email, subject, html)
+
+        const ownerHtml = `<p>Rental Overdue</p>
+          <p>Customer: ${record.customer_name}</p>
+          <p>Contact Number: ${record.customer_phone}</p>
+          <p>Email: ${record.customer_email}</p>
+          <p>Rental: <strong>${record.attire_name}</strong> (ID: ${
+          record.attire_id
+        })</p>
+          <p>Due Date: ${returnDate.toLocaleDateString()}</p>
+          <p>Overdue by: ${overdueDays} day(s)</p>
+          <p>Overdue fee: ₱${overdueFee.toLocaleString()}</p>
+          <p>Status: Overdue</p>`
+
+        await sendEmail(record.customer_email, subject, customerHtml)
+        await sendEmail(
+          ownerEmail,
+          `[Owner] ${subject} - ${record.customer_name}`,
+          ownerHtml
+        )
       }
     }
   } catch (err) {
